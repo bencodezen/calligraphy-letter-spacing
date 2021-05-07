@@ -3,10 +3,11 @@
     <div id="letter" class="a6" ref="envelope">
       <div
         class="metric-line"
-        :style="`width: ${lineState.left}px; top: ${metricState.top}px;`"
+        :style="`width: ${lineState.width}px; top: ${metricState.top}px;`"
       >
-        {{ lineState.left }}
+        {{ lineState.widthInInches }} in
       </div>
+      <div class="middle-line"></div>
       <div class="line-1" @click="setDimensions">
         {{ envelopeState.text.line1 }}
       </div>
@@ -20,11 +21,12 @@
         {{ envelopeState.text.line4 }}
       </div>
     </div>
-    <p>{{ lineState }}</p>
-    <input type="text" v-model="envelopeState.text.line1" />
-    <input type="text" v-model="envelopeState.text.line2" />
-    <input type="text" v-model="envelopeState.text.line3" />
-    <input type="text" v-model="envelopeState.text.line4" />
+    <form @submit.prevent>
+      <input type="text" v-model="envelopeState.text.line1" />
+      <input type="text" v-model="envelopeState.text.line2" />
+      <input type="text" v-model="envelopeState.text.line3" />
+      <input type="text" v-model="envelopeState.text.line4" />
+    </form>
   </main>
 </template>
 
@@ -48,9 +50,15 @@ export default {
     })
 
     const lineState = reactive({
-      left: 0,
+      width: 0,
+      widthInInches: computed(() => {
+        return (4.75 * lineState.ratio).toFixed(2)
+      }),
       top: 0,
-      height: 0
+      height: 0,
+      ratio: computed(() => {
+        return lineState.width / envelopeState.width
+      })
     })
 
     const metricState = reactive({
@@ -60,7 +68,7 @@ export default {
     })
 
     const setDimensions = event => {
-      lineState.left = event.srcElement.offsetLeft
+      lineState.width = event.srcElement.offsetLeft
       lineState.top = event.srcElement.offsetTop
       lineState.height = event.srcElement.offsetHeight
     }
@@ -102,10 +110,17 @@ export default {
 
 .metric-line {
   width: 50px;
-  border-bottom: 3px solid red;
+  border-bottom: 3px solid #ddd;
   text-align: center;
   position: absolute;
   left: 0;
+}
+
+.middle-line {
+  border-left: 5px dashed #eee;
+  height: calc(4.75in - 0.1in);
+  position: absolute;
+  z-index: -1;
 }
 
 .line-1,
@@ -145,5 +160,16 @@ export default {
 .a6 {
   height: 4.75in;
   width: 6.5in;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+input {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 </style>
