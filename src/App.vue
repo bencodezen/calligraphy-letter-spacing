@@ -52,7 +52,7 @@ export default {
     const lineState = reactive({
       width: 0,
       widthInInches: computed(() => {
-        return (4.75 * lineState.ratio).toFixed(2)
+        return (6.5 * lineState.ratio).toFixed(2)
       }),
       top: 0,
       height: 0,
