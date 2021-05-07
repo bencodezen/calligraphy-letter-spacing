@@ -1,22 +1,69 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <main class="wrapper">
+    <div id="letter" class="test" ref="letter">
+      <div class="line-1">{{ letterState.text }}</div>
+    </div>
+    <p>{{ letterState }}</p>
+    <input type="text" v-model="letterState.text" />
+  </main>
 </template>
 
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import { reactive, ref, onMounted, watchEffect } from 'vue'
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
+export default {
+  setup() {
+    const letter = ref(null)
+
+    const letterState = reactive({
+      offsetLeft: 0,
+      width: 0
+    })
+
+    watchEffect(() => {
+      if (letterState.text) {
+        letterState.offsetLeft = letter.value.offsetLeft
+      }
+    })
+
+    onMounted(() => {
+      letterState.width = letter.value.offsetWidth
+      console.log({ window })
+    })
+
+    return {
+      letter,
+      letterState
+    }
+  }
+}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#letter {
+  border: 2px solid black;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+.line-1 {
+  display: inline-block;
+}
+
+.test {
+  width: 2in;
+  height: 1in;
+}
+
+.a6 {
+  width: 4.75in;
+  height: 6.5in;
 }
 </style>
